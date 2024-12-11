@@ -1,6 +1,6 @@
-# Task Manager App
+# Todo List
 
-A simple Task Manager application built with Node.js, Express, and MongoDB.
+A simple Todo-List application built with Node.js, Express, and MongoDB.
 
 ## Installation
 
