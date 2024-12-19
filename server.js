@@ -24,9 +24,9 @@ app.get('/index', (req,res) => {
     res.render('index')
 })
 // Add a task
-app.post('/tasks', async (req, res) => {
+app.post('/tasks', authenticateToken, async (req, res) => {
     try {
-        const task = new Task({ text: req.body.text });
+        const task = new Task({ text: req.body.text, userId: req.userId });
         await task.save();
         res.status(201).json(task);
     } catch (err) {
@@ -44,8 +44,8 @@ app.get('/tasks', authenticateToken, async (req, res) => {
     }
 });
 
-// Update a task (e.g., toggle completion)
-app.put('/tasks/:id', async (req, res) => {
+// Update a task (toggle isCompleted)
+app.put('/tasks/:id', authenticateToken, async (req, res) => {
     try {
         const task = await Task.findByIdAndUpdate(
             req.params.id,
@@ -59,7 +59,7 @@ app.put('/tasks/:id', async (req, res) => {
 });
 
 // Delete a task
-app.delete('/tasks/:id', async (req, res) => {
+app.delete('/tasks/:id', authenticateToken, async (req, res) => {
     try {
         await Task.findByIdAndDelete(req.params.id);
         res.status(204).send();

@@ -1,6 +1,9 @@
 
+const token = localStorage.getItem('token')
+if (!token) window.location.href = '/'
 const taskText = document.getElementById('task-text');
 const taskList = document.getElementById('task-list');
+
 
 // Fetch and display tasks on page load
 document.addEventListener('DOMContentLoaded', fetchTasks);
@@ -22,7 +25,7 @@ document.addEventListener('keypress', (e) => {
     }
 });
 // get jwt from local storage 
-const token = localStorage.getItem('token')
+
 // Fetch all tasks from the backend and render them
 async function fetchTasks() {
     try {
@@ -47,7 +50,10 @@ async function makeTask(e) {
         try {
             const response = await fetch('/tasks', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Authorization': `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ text: taskText.value }),
             });
             const newTask = await response.json();
@@ -76,7 +82,13 @@ function clearInput() {
 // Delete a task from the backend and remove it from the DOM
 async function deleteTask(id) {
     try {
-        await fetch(`/tasks/${id}`, { method: 'DELETE' });
+        await fetch(`/tasks/${id}`, { 
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json'
+            }
+         });
         document.getElementById(`${id}-task`).remove();
     } catch (err) {
         console.error('Error deleting task:', err);
@@ -90,7 +102,9 @@ async function strikeTask(id) {
     try {
         await fetch(`/tasks/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json' },
             body: JSON.stringify({ isCompleted }),
         });
         document.getElementById(`${id}-task`).classList.toggle('strike', isCompleted);
