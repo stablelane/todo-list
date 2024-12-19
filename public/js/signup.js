@@ -24,6 +24,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
         if(response.ok) {
             window.location.href = '/login'
         } else {
+            errorMessageElement.textContent = result.error || 'Signup failed. Please try again.';
             console.log('signup failed', result.error)
         }
     } catch (error) {
