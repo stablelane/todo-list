@@ -24,7 +24,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         
         
     } catch (error) {
-        console.log('error')
         console.log(error)
     }
 })

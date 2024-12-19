@@ -17,11 +17,18 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: false}))
 app.use(express.json()); // Parse JSON requests
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
+    res.render('login')
+})
+
+app.get('/login', (req,res) => {
     res.render('login')
 })
 app.get('/index', (req,res) => {
     res.render('index')
+})
+app.get('/signup', (req,res) => {
+    res.render('signup')
 })
 // Add a task
 app.post('/tasks', authenticateToken, async (req, res) => {
@@ -89,7 +96,30 @@ app.post('/login', async (req, res) => {
     }
 
 })
+//signup 
 
+app.post('/signup', async (req, res) => {
+    try {
+        console.log(req.body)
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        console.log(hashedPassword)
+        const newUser = new User({ 
+            name: req.body.name,
+            username: req.body.username,
+            password: hashedPassword
+             })
+        await newUser.save()
+        res.status(201).json(newUser)
+    } catch (error) {
+        console.log(error.code)
+        if (error.code === 11000) {
+            res.status(400).json({ error: "username already exists"})
+        } else {
+
+            res.status(500).json({ error: "Server error. Couldn't create user." });
+        }
+    }
+})
 //jwt authentication midddleware
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']

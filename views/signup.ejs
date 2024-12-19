@@ -17,21 +17,24 @@
 
 <body>
     <div id="container" class="container">
-        <h1>Login</h1>
-        <form id="login-form" class="login-input">
+        <h1>Sign Up</h1>
+        <form id="signup-form" class="login-input">
+            <label for="name">Name:</label>
+            <input id="name" name="name" placeholder="Username"
+                type="text" required>
             <label for="username">Username:</label>
             <input id="username" name="username" placeholder="Username"
                 type="text" required>
             <label for="password">Password:</label>
             <input id="password" name="password" placeholder="Password" type="password" required>
-            <button id="login-submit-btn" name="login-submit-btn" type="submit">Login</button>
+            <button id="signup-submit-btn" name="signup-submit-btn" type="submit">Sign Up</button>
+            <p id="error-message" style="color: red;"></p> 
         </form>
-        <a href="/signup">Sign Up</a>
 
 
 
     </div>
-    <script src="/js/login.js"></script>
+    <script src="/js/signup.js"></script>
 </body>
 
 </html>
