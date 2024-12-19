@@ -35,9 +35,9 @@ app.post('/tasks', async (req, res) => {
 });
 
 // Get all tasks
-app.get('/tasks', async (req, res) => {
+app.get('/tasks', authenticateToken, async (req, res) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find({ userId: req.userId });
         res.status(200).json(tasks);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -91,6 +91,17 @@ app.post('/login', async (req, res) => {
 })
 
 //jwt authentication midddleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.status(401)
+    
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userid) => {
+        if (err) return res.status(403)
+        req.userId = userid
+        next()
+    })
 
+}
 
 app.listen(process.env.PORT || 5000)
