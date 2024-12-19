@@ -1,18 +1,26 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
-const Task = require('./models/task');
+const Task = require('./models/task')
+const User = require('./models/user')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const { status } = require('express/lib/response')
+require('dotenv').config()
 
 mongoose.connect('mongodb://localhost/taskdb')
     .then(() => app.listen(() => console.log(`Server running`)))
     .catch(err => console.error(err));
 
 app.set('view engine', 'ejs')
-app.use(express.urlencoded({ extended: false}))
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: false}))
 app.use(express.json()); // Parse JSON requests
 
 app.get('/', (req,res) => {
+    res.render('login')
+})
+app.get('/index', (req,res) => {
     res.render('index')
 })
 // Add a task
@@ -59,5 +67,30 @@ app.delete('/tasks/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+
+//login
+
+app.post('/login', async (req, res) => {
+    
+    try {
+        const user = await User.findOne({ username: req.body.username})
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            console.log("password is correct")
+            // res.render('index')
+            const accessToken = jwt.sign(user.id, process.env.ACCESS_TOKEN_SECRET)
+            res.json({ accessToken: accessToken})
+        } else {
+            res.status(401).json({ message: 'Incorrect username or password' });
+        }
+
+    } catch (error) {
+        res.status(403).json({ error: error.message})
+    }
+
+})
+
+//jwt authentication midddleware
+
 
 app.listen(process.env.PORT || 5000)
