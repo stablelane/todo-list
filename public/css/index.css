@@ -15,6 +15,7 @@ body {
 }
 
 .container {
+    position: relative;
     min-width: 600px;
     max-width: 810px;
     width: 80%;
@@ -28,8 +29,15 @@ body {
     justify-content: flex-start;
     flex-direction: column;
     padding: 1em 7em;
+    z-index: 1;
 }
-
+.logout {
+    position: fixed;
+    top: 16.5em;
+    right: 43em;
+    cursor: pointer;
+    z-index: 2;
+}
 .container h1 {
     font-weight: 400;
     font-size: 1.5em;
